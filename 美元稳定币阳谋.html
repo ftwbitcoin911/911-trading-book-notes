@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>稳定币阳谋 · 全球美债数字管道</title>
+<style>
+  /* ============ 基础 ============ */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #080b12;
+    color: #eef2f9;
+    line-height: 1.75;
+    transition: background 0.35s ease, color 0.35s ease;
+    padding: 0 0 80px;
+  }
+
+  /* 浅色主题 */
+  body.light {
+    background: #f6f7fb;
+    color: #0f1420;
+  }
+
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+
+  /* ============ 主题切换按钮 ============ */
+  .theme-switch {
+    position: fixed;
+    top: 24px; right: 24px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    background: #0f1521;
+    border: 1px solid #1e273a;
+    border-radius: 40px;
+    padding: 5px;
+    box-shadow: 0 12px 30px -12px rgba(0,0,0,.6);
+    transition: background .35s, border .35s;
+  }
+  body.light .theme-switch { background: #ffffff; border-color: #e4e8f0; box-shadow: 0 12px 30px -14px rgba(20,30,60,.2); }
+
+  .theme-switch button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 8px 18px;
+    border-radius: 40px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7689;
+    transition: all .3s ease;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .theme-switch button.active {
+    background: linear-gradient(135deg, #f0b90b, #d4a30a);
+    color: #080b12;
+    box-shadow: 0 4px 14px -4px rgba(240,185,11,.6);
+  }
+  .theme-switch button:not(.active):hover { color: #c4cddb; }
+  body.light .theme-switch button:not(.active):hover { color: #0f1420; }
+
+  /* ============ Hero ============ */
+  .hero {
+    text-align: center;
+    padding: 100px 20px 70px;
+    position: relative;
+    background: radial-gradient(ellipse 70% 55% at 50% -10%, rgba(240,185,11,.14), transparent 60%),
+                radial-gradient(ellipse 55% 45% at 85% 25%, rgba(59,130,246,.10), transparent 55%);
+    border-bottom: 1px solid #1e273a;
+    margin-bottom: 48px;
+    transition: background .35s, border .35s;
+  }
+  body.light .hero {
+    background: radial-gradient(ellipse 70% 55% at 50% -10%, rgba(240,185,11,.18), transparent 60%),
+                radial-gradient(ellipse 55% 45% at 85% 25%, rgba(59,130,246,.10), transparent 55%);
+    border-bottom-color: #e4e8f0;
+  }
+
+  .hero .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    letter-spacing: 3px;
+    font-weight: 600;
+    color: #f0b90b;
+    border: 1px solid rgba(240,185,11,.4);
+    padding: 7px 18px;
+    border-radius: 40px;
+    margin-bottom: 28px;
+    background: rgba(240,185,11,.08);
+  }
+  .hero .tag .pulse {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #f0b90b;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .4; transform: scale(.85); }
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    color: #eef2f9;
+  }
+  body.light .hero h1 { color: #0f1420; }
+
+  .hero h1 .gold {
+    background: linear-gradient(135deg, #f0b90b 0%, #d4a30a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #f0b90b;
+  }
+
+  .hero .sub {
+    color: #6b7689;
+    font-size: 1.1rem;
+    max-width: 680px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+  .hero .sub strong { color: #c4cddb; font-weight: 600; }
+  body.light .hero .sub strong { color: #2a3346; }
+
+  @media (max-width: 700px) {
+    .hero h1 { font-size: 2rem; }
+    .hero { padding: 80px 16px 50px; }
+    .theme-switch { top: 16px; right: 16px; }
+    .theme-switch button { padding: 7px 13px; font-size: 12px; }
+  }
+
+  /* ============ Section ============ */
+  section { margin-bottom: 64px; }
+
+  .sec-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .sec-num {
+    flex-shrink: 0;
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+    background: linear-gradient(135deg, #f0b90b, #d4a30a);
+    color: #080b12;
+    box-shadow: 0 8px 20px -8px rgba(240,185,11,.6);
+  }
+  .sec-head h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #eef2f9;
+    letter-spacing: -.3px;
+  }
+  body.light .sec-head h2 { color: #0f1420; }
+
+  .sec-head .sub {
+    color: #6b7689;
+    font-size: .88rem;
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  /* ============ Cards ============ */
+  .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; }
+  @media (max-width: 840px) {
+    .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: linear-gradient(160deg, #141b2b, #0f1521);
+    border: 1px solid #1e273a;
+    border-radius: 16px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1),
+                border-color .35s, box-shadow .35s,
+                background .35s;
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,.6);
+  }
+  body.light .card {
+    background: linear-gradient(160deg, #ffffff, #f8fafd);
+    border-color: #e4e8f0;
+    box-shadow: 0 20px 50px -25px rgba(20,30,60,.18);
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: #2f3d5c;
+  }
+  body.light .card:hover { border-color: #c9d1e0; }
+
+  .card .accent-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .bar-gold { background: linear-gradient(90deg, #f0b90b, transparent); }
+  .bar-green { background: linear-gradient(90deg, #10c88a, transparent); }
+  .bar-blue { background: linear-gradient(90deg, #4a8eff, transparent); }
+  .bar-purple { background: linear-gradient(90deg, #a78bfa, transparent); }
+
+  .card .icon {
+    font-size: 26px;
+    margin-bottom: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px; height: 54px;
+    background: rgba(240,185,11,.1);
+    border-radius: 14px;
+    border: 1px solid rgba(240,185,11,.2);
+  }
+  .card h3 {
+    font-size: 1.08rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #eef2f9;
+    letter-spacing: -.2px;
+  }
+  body.light .card h3 { color: #0f1420; }
+
+  .card p {
+    font-size: .92rem;
+    color: #6b7689;
+    line-height: 1.75;
+  }
+  .card p strong { color: #c4cddb; font-weight: 700; }
+  body.light .card p strong { color: #2a3346; }
+
+  /* ============ Flow ============ */
+  .flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    background: linear-gradient(160deg, #141b2b, #0f1521);
+    border: 1px solid #1e273a;
+    border-radius: 20px;
+    padding: 40px 24px;
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,.6);
+    transition: background .35s, border .35s;
+  }
+  body.light .flow {
+    background: linear-gradient(160deg, #ffffff, #f8fafd);
+    border-color: #e4e8f0;
+    box-shadow: 0 20px 50px -25px rgba(20,30,60,.18);
+  }
+
+  .flow-node {
+    text-align: center;
+    padding: 0 12px;
+    min-width: 120px;
+    flex: 1;
+  }
+  .flow-node .circle {
+    width: 78px; height: 78px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin: 0 auto 14px;
+    border: 2px solid #1e273a;
+    background: #0f1521;
+    transition: all .35s cubic-bezier(.2,.8,.2,1);
+  }
+  body.light .flow-node .circle { border-color: #e4e8f0; background: #ffffff; }
+
+  .flow-node:hover .circle {
+    border-color: #f0b90b;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 12px 30px -10px rgba(240,185,11,.5);
+  }
+  .flow-node .label {
+    font-size: .92rem;
+    font-weight: 700;
+    color: #eef2f9;
+  }
+  body.light .flow-node .label { color: #0f1420; }
+
+  .flow-node .desc {
+    font-size: .76rem;
+    color: #6b7689;
+    margin-top: 5px;
+    line-height: 1.5;
+  }
+
+  .flow-arrow {
+    font-size: 22px;
+    color: #f0b90b;
+    flex-shrink: 0;
+    animation: slide 1.8s ease-in-out infinite;
+    opacity: .8;
+  }
+  @keyframes slide {
+    0%,100% { transform: translateX(0); opacity: .5; }
+    50% { transform: translateX(6px); opacity: 1; }
+  }
+
+  @media (max-width: 840px) {
+    .flow { flex-direction: column; gap: 14px; padding: 30px 20px; }
+    .flow-arrow { transform: rotate(90deg); animation: none; }
+    .flow-node { width: 100%; }
+  }
+
+  /* ============ Comparison ============ */
+  .compare {
+    background: linear-gradient(160deg, #141b2b, #0f1521);
+    border: 1px solid #1e273a;
+    border-radius: 20px;
+    padding: 36px;
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,.6);
+    transition: background .35s, border .35s;
+  }
+  body.light .compare {
+    background: linear-gradient(160deg, #ffffff, #f8fafd);
+    border-color: #e4e8f0;
+    box-shadow: 0 20px 50px -25px rgba(20,30,60,.18);
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  @media (max-width: 760px) {
+    .compare-grid { grid-template-columns: 1fr; }
+  }
+
+  .compare-col h4 {
+    font-size: .95rem;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #eef2f9;
+    font-weight: 700;
+  }
+  body.light .compare-col h4 { color: #0f1420; }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-block;
+  }
+
+  .bar-track {
+    height: 46px;
+    background: #0a0e17;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid #1e273a;
+    transition: background .35s, border .35s;
+  }
+  body.light .bar-track { background: #eef1f7; border-color: #e4e8f0; }
+
+  .bar-fill {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 16px;
+    font-weight: 800;
+    font-size: .95rem;
+    border-radius: 9px;
+    transition: width 1.4s cubic-bezier(.2,.8,.2,1);
+    width: 0;
+    color: #fff;
+  }
+  .bar-fill.bank {
+    background: linear-gradient(90deg, #1a2740, #4a8eff);
+  }
+  .bar-fill.stable {
+    background: linear-gradient(90deg, #0d3a2a, #10c88a);
+  }
+
+  .compare-note {
+    font-size: .85rem;
+    color: #6b7689;
+    margin-top: 14px;
+    line-height: 1.7;
+  }
+  .compare-note strong { color: #c4cddb; font-weight: 700; }
+  body.light .compare-note strong { color: #2a3346; }
+
+  .quote {
+    border-left: 3px solid #f0b90b;
+    padding: 18px 24px;
+    margin-top: 28px;
+    background: rgba(240,185,11,.05);
+    border-radius: 0 12px 12px 0;
+    font-size: .95rem;
+    color: #d6dde8;
+    font-style: italic;
+    line-height: 1.75;
+  }
+  body.light .quote {
+    background: rgba(199,148,0,.06);
+    color: #2a3346;
+  }
+  .quote::before {
+    content: "「";
+    color: #f0b90b;
+    font-size: 1.4rem;
+    font-style: normal;
+    font-weight: 700;
+    margin-right: 4px;
+  }
+  .quote::after {
+    content: "」";
+    color: #f0b90b;
+    font-size: 1.4rem;
+    font-style: normal;
+    font-weight: 700;
+    margin-left: 4px;
+  }
+
+  /* ============ Stats ============ */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 20px;
+  }
+  @media (max-width: 840px) {
+    .stats-grid { grid-template-columns: 1fr; }
+  }
+
+  .stat-card {
+    background: linear-gradient(160deg, #141b2b, #0f1521);
+    border: 1px solid #1e273a;
+    border-radius: 18px;
+    padding: 32px 26px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,.6);
+    transition: transform .35s, border-color .35s, background .35s;
+  }
+  body.light .stat-card {
+    background: linear-gradient(160deg, #ffffff, #f8fafd);
+    border-color: #e4e8f0;
+    box-shadow: 0 20px 50px -25px rgba(20,30,60,.18);
+  }
+  .stat-card:hover {
+    transform: translateY(-4px);
+    border-color: #2f3d5c;
+  }
+  body.light .stat-card:hover { border-color: #c9d1e0; }
+
+  .stat-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 60%; height: 2px;
+    background: linear-gradient(90deg, transparent, #f0b90b, transparent);
+  }
+
+  .stat-big {
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+    color: #f0b90b;
+  }
+
+  .stat-label {
+    font-size: .85rem;
+    color: #6b7689;
+    line-height: 1.6;
+  }
+
+  /* ============ Deep Analysis ============ */
+  .deep {
+    background: linear-gradient(160deg, #141b2b, #0f1521);
+    border: 1px solid #1e273a;
+    border-radius: 20px;
+    padding: 38px;
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,.6);
+    transition: background .35s, border .35s;
+  }
+  body.light .deep {
+    background: linear-gradient(160deg, #ffffff, #f8fafd);
+    border-color: #e4e8f0;
+    box-shadow: 0 20px 50px -25px rgba(20,30,60,.18);
+  }
+
+  .deep h3 {
+    font-size: 1.1rem;
+    color: #f0b90b;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+  }
+
+  .deep .item {
+    display: flex;
+    gap: 18px;
+    padding: 22px 0;
+    border-bottom: 1px solid #1e273a;
+  }
+  body.light .deep .item { border-bottom-color: #e4e8f0; }
+
+  .deep .item:last-child { border-bottom: none; padding-bottom: 0; }
+  .deep .item:first-child { padding-top: 0; }
+
+  .deep .item .n {
+    flex-shrink: 0;
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: rgba(240,185,11,.12);
+    color: #f0b90b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: .85rem;
+    border: 1px solid rgba(240,185,11,.22);
+  }
+
+  .deep .item .t strong {
+    color: #eef2f9;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -.1px;
+  }
+  body.light .deep .item .t strong { color: #0f1420; }
+
+  .deep .item .t p {
+    color: #6b7689;
+    font-size: .9rem;
+    line-height: 1.75;
+  }
+
+  /* ============ Warning ============ */
+  .warn-box {
+    background: rgba(246,70,93,.06);
+    border: 1px solid rgba(246,70,93,.25);
+    border-radius: 20px;
+    padding: 32px 36px;
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,.6);
+    transition: background .35s, border .35s;
+  }
+  body.light .warn-box {
+    background: rgba(224,58,82,.05);
+    border-color: rgba(224,58,82,.2);
+    box-shadow: 0 20px 50px -25px rgba(20,30,60,.18);
+  }
+
+  .warn-box h3 {
+    color: #f6465d;
+    font-size: 1.05rem;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+  }
+
+  .warn-box ul { list-style: none; }
+
+  .warn-box li {
+    padding: 11px 0 11px 26px;
+    position: relative;
+    color: #6b7689;
+    font-size: .9rem;
+    line-height: 1.75;
+  }
+
+  .warn-box li::before {
+    content: "▸";
+    position: absolute;
+    left: 6px;
+    color: #f6465d;
+    font-weight: 700;
+  }
+
+  .warn-box li strong { color: #c4cddb; font-weight: 700; }
+  body.light .warn-box li strong { color: #2a3346; }
+
+  /* ============ Essence ============ */
+  .essence {
+    text-align: center;
+    padding: 56px 40px;
+    background: linear-gradient(160deg, #141b2b, #0f1521);
+    border: 1px solid rgba(240,185,11,.3);
+    border-radius: 22px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 50px -20px rgba(0,0,0,.6);
+    transition: background .35s, border .35s;
+  }
+  body.light .essence {
+    background: linear-gradient(160deg, #ffffff, #fffaef);
+    border-color: rgba(199,148,0,.35);
+    box-shadow: 0 20px 50px -25px rgba(20,30,60,.18);
+  }
+
+  .essence .label {
+    font-size: 12px;
+    letter-spacing: 5px;
+    color: #f0b90b;
+    margin-bottom: 24px;
+    font-weight: 700;
+  }
+
+  .essence .quote-big {
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1.65;
+    color: #eef2f9;
+    max-width: 800px;
+    margin: 0 auto;
+    letter-spacing: -.2px;
+  }
+  body.light .essence .quote-big { color: #0f1420; }
+
+  .essence .quote-big em {
+    color: #f0b90b;
+    font-style: normal;
+    background: rgba(240,185,11,.12);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .essence .foot {
+    margin-top: 26px;
+    font-size: .88rem;
+    color: #6b7689;
+    line-height: 1.7;
+  }
+
+  /* ============ Footer ============ */
+  .footer {
+    text-align: center;
+    color: #6b7689;
+    font-size: .82rem;
+    padding-top: 50px;
+    border-top: 1px solid #1e273a;
+    margin-top: 80px;
+    line-height: 1.9;
+  }
+  body.light .footer { border-top-color: #e4e8f0; }
+
+  .footer strong { color: #f0b90b; font-weight: 700; }
+
+  /* ============ 滚动入场 ============ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .8s cubic-bezier(.2,.8,.2,1),
+                transform .8s cubic-bezier(.2,.8,.2,1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- 主题切换 -->
+<div class="theme-switch" id="themeSwitch">
+  <button id="btnDark" class="active" onclick="setTheme('dark')">🌙 黑</button>
+  <button id="btnLight" onclick="setTheme('light')">☀️ 白</button>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="tag">
+    <span class="pulse"></span>
+    MACRO · STRATEGY · DECODED
+  </div>
+  <h1>稳定币<span class="gold">阳谋</span></h1>
+  <p class="sub">
+    美国如何用一根<strong>数字吸管</strong>，把全世界的钱<br>
+    变成财政部的<strong>短期美债自动买盘</strong>
+  </p>
+</div>
+
+<div class="wrap">
+
+  <!-- 1. 核心结论 -->
+  <section class="reveal">
+    <div class="sec-head">
+      <div class="sec-num">01</div>
+      <div>
+        <h2>核心结论：一句话看懂</h2>
+        <div class="sub">美国通过立法，为天量短期美债打造了一个全球性、自动化的「数字接盘管道」</div>
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="accent-bar bar-gold"></div>
+        <div class="icon">🎯</div>
+        <h3>立法强制绑定</h3>
+        <p>稳定币发行方必须将 <strong>100%</strong> 的储备配置为美元现金或 93 天以内到期的短期美国国债。没有任何自由度。</p>
+      </div>
+      <div class="card">
+        <div class="accent-bar bar-green"></div>
+        <div class="icon">🌍</div>
+        <h3>全球资金入美</h3>
+        <p>全球用户每买入 1 美元稳定币，发行方就要对应买入约 1 美元短期美债 —— 钱自动流向美国财政部。</p>
+      </div>
+      <div class="card">
+        <div class="accent-bar bar-blue"></div>
+        <div class="icon">⚙️</div>
+        <h3>不敏感的刚性买盘</h3>
+        <p>无论利率高低、价格涨跌，发行方都必须持续配置短期美债，形成稳定、持续增长的新买家群体。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. 闭环流程 -->
+  <section class="reveal">
+    <div class="sec-head">
+      <div class="sec-num">02</div>
+      <div>
+        <h2>资金闭环：数字吸管如何工作</h2>
+        <div class="sub">从全球散户的钱包，到美国财政部的账户</div>
+      </div>
+    </div>
+    <div class="flow">
+      <div class="flow-node">
+        <div class="circle">👤</div>
+        <div class="label">全球用户</div>
+        <div class="desc">阿根廷 / 土耳其 / 尼日利亚…</div>
+      </div>
+      <div class="flow-arrow">➜</div>
+      <div class="flow-node">
+        <div class="circle">💵</div>
+        <div class="label">买入 USDT/USDC</div>
+        <div class="desc">用本币兑换链上美元</div>
+      </div>
+      <div class="flow-arrow">➜</div>
+      <div class="flow-node">
+        <div class="circle">🏦</div>
+        <div class="label">发行方储备</div>
+        <div class="desc">Tether / Circle</div>
+      </div>
+      <div class="flow-arrow">➜</div>
+      <div class="flow-node">
+        <div class="circle">📜</div>
+        <div class="label">买入短期美债</div>
+        <div class="desc">93 天内到期</div>
+      </div>
+      <div class="flow-arrow">➜</div>
+      <div class="flow-node">
+        <div class="circle">🏛️</div>
+        <div class="label">美国财政部</div>
+        <div class="desc">美债融资完成</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 效率对比 -->
+  <section class="reveal">
+    <div class="sec-head">
+      <div class="sec-num">03</div>
+      <div>
+        <h2>效率对比：稳定币 vs 传统银行</h2>
+        <div class="sub">同样 1 美元资产，美债配置比例相差 10 倍</div>
+      </div>
+    </div>
+    <div class="compare">
+      <div class="compare-grid">
+        <div class="compare-col">
+          <h4><span class="dot" style="background:#4a8eff"></span> 传统商业银行</h4>
+          <div class="bar-track">
+            <div class="bar-fill bank" id="barBank">8%</div>
+          </div>
+          <div class="compare-note">
+            每 1 美元资产中，仅约 <strong>8 美分</strong> 配置于短期美债，其余为贷款、长期资产等。
+          </div>
+        </div>
+        <div class="compare-col">
+          <h4><span class="dot" style="background:#10c88a"></span> 美元稳定币发行方</h4>
+          <div class="bar-track">
+            <div class="bar-fill stable" id="barStable">80%</div>
+          </div>
+          <div class="compare-note">
+            每 1 美元储备中，约 <strong>80 美分</strong> 以上配置于短期美债，比例是银行的 <strong>10 倍</strong>。
+          </div>
+        </div>
+      </div>
+      <div class="quote">
+        1 美元稳定币，就有约 80 美分去配置了美债 —— 效率太牛逼了。
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 规模数据 -->
+  <section class="reveal">
+    <div class="sec-head">
+      <div class="sec-num">04</div>
+      <div>
+        <h2>规模与潜力</h2>
+        <div class="sub">现状虽小，但增长曲线才是重点</div>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-big">~3000亿</div>
+        <div class="stat-label">当前稳定币总市值（美元）</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-big">2万亿</div>
+        <div class="stat-label">美财长预测 2030 年对美债新增需求</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-big">40万亿+</div>
+        <div class="stat-label">美国联邦政府未偿国债总规模</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 深层分析 -->
+  <section class="reveal">
+    <div class="sec-head">
+      <div class="sec-num">05</div>
+      <div>
+        <h2>更深层的「聪明」</h2>
+        <div class="sub">不只是卖债，更是美元霸权的数字延伸</div>
+      </div>
+    </div>
+    <div class="deep">
+      <h3>🔍 两个被低估的设计巧思</h3>
+      <div class="item">
+        <div class="n">01</div>
+        <div class="t">
+          <strong>绕开主权博弈，把买家从「央行」换成「全球散户」</strong>
+          <p>传统上美债靠中日等央行购买，需要外交和博弈。现在通过稳定币，全球无数散户用本币买入链上美元，发行方再去买美债 —— 分散了政治风险，也绕开了主权层面的对抗。</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="n">02</div>
+        <div class="t">
+          <strong>「链上美元化」——比航母更低成本的霸权延伸</strong>
+          <p>当阿根廷、土耳其、尼日利亚的人大量使用 USDT/USDC 储值和交易时，美元在那些本币崩溃的国家直接取代了当地货币。这是一种隐蔽、低成本、无需驻军的美元霸权形态。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 客观提醒 -->
+  <section class="reveal">
+    <div class="sec-head">
+      <div class="sec-num">06</div>
+      <div>
+        <h2>客观提醒：并非万能药</h2>
+        <div class="sub">战略设计很聪明，但结构性风险依然存在</div>
+      </div>
+    </div>
+    <div class="warn-box">
+      <h3>⚠️ 三个不容忽视的脆弱性</h3>
+      <ul>
+        <li><strong>规模差距巨大</strong> —— 稳定币总市值约 3000 亿美元，相对 40 万亿+ 的美债存量，占比不到 1%。短期是情绪利好，不是救命稻草。</li>
+        <li><strong>挤兑风险</strong> —— 若发生类似 FTX / 硅谷银行的信任危机，用户集中赎回，发行方将被迫抛售美债换现金，反而会冲击美债市场。这正是立法强制「100% 短期美债」的原因。</li>
+        <li><strong>期限错配未解</strong> —— 稳定币强制购买的是 93 天以内的短期国债，而美债真正的压力在中长期。这相当于用「短期需求」置换「长期风险」，未触及美债期限错配的根本结构问题。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 7. 精髓 -->
+  <section class="reveal">
+    <div class="essence">
+      <div class="label">E S S E N C E</div>
+      <div class="quote-big">
+        稳定币法案本质上创建了一个 <em>高频、自动、全球化</em> 的短期美债买盘，<br>
+        其资产端效率 <em>（每 1 美元资产对应 80 美分美债）</em><br>
+        远超传统银行 <em>（每 1 美元对应 8 美分）</em>，<br>
+        是美元霸权在数字时代的 <em>制度性扩张</em>。
+      </div>
+      <div class="foot">
+        但这更像一剂「续命」的战术手段，而非根治财政顽疾的战略解药
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">
+    <strong>稳定币 · 美债 · 美元霸权</strong><br>
+    宏观策略可视化解读 · 仅供研究学习，不构成任何投资建议
+  </div>
+
+</div>
+
+<script>
+  // ========== 主题切换 ==========
+  function setTheme(mode) {
+    var body = document.body;
+    var btnDark = document.getElementById('btnDark');
+    var btnLight = document.getElementById('btnLight');
+
+    if (mode === 'light') {
+      body.classList.add('light');
+      btnLight.classList.add('active');
+      btnDark.classList.remove('active');
+      try { localStorage.setItem('theme', 'light'); } catch(e) {}
+    } else {
+      body.classList.remove('light');
+      btnDark.classList.add('active');
+      btnLight.classList.remove('active');
+      try { localStorage.setItem('theme', 'dark'); } catch(e) {}
+    }
+  }
+
+  // 恢复上次主题
+  (function(){
+    try {
+      var saved = localStorage.getItem('theme');
+      if (saved === 'light') setTheme('light');
+    } catch(e) {}
+  })();
+
+  // ========== 滚动入场动画 ==========
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(function(el) {
+      observer.observe(el);
+    });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el) {
+      el.classList.add('visible');
+    });
+  }
+
+  // ========== 进度条动画 ==========
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      var barBank = document.getElementById('barBank');
+      var barStable = document.getElementById('barStable');
+      if (barBank) barBank.style.width = '8%';
+      if (barStable) barStable.style.width = '80%';
+    }, 400);
+  });
+</script>
+
+</body>
+</html>

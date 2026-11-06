@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>交易必读书单 · 心智图谱</title>
+  <style>
+    /* ================= 全局重置 ================= */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ================= 亮色主题 ================= */
+    [data-theme="light"] {
+      --bg-body: #f8f7f4;
+      --bg-nav: rgba(248, 247, 244, 0.85);
+      --text-main: #1a1a1a;
+      --text-muted: #737373;
+      --accent-gold: #947132;
+      --accent-gold-light: #c49a5c;
+      --border-color: #e5e3db;
+
+      --tag-bg: transparent;
+      --tag-border: #e5e3db;
+      --tag-text: #555;
+
+      --card-bg: transparent;
+      --card-border: #e5e3db;
+      --card-hover-bg: #ffffff;
+      --card-hover-border: #d0cdc4;
+      --card-title: #1a1a1a;
+
+      --quote-border: #947132;
+      --quote-text: #1a1a1a;
+
+      --subhead-bg: #f1ede6;
+      --subhead-border: #947132;
+      --chip-bg: transparent;
+      --chip-border: #e5e3db;
+      --chip-hover-bg: #f1ede6;
+      --chip-hover-text: #947132;
+    }
+
+    /* ================= 暗色主题 ================= */
+    [data-theme="dark"] {
+      --bg-body: #121212;
+      --bg-nav: rgba(18, 18, 18, 0.85);
+      --text-main: #f0f0f0;
+      --text-muted: #8c8c8c;
+      --accent-gold: #d4af37;
+      --accent-gold-light: #f3d27a;
+      --border-color: #2e2e2e;
+
+      --tag-bg: transparent;
+      --tag-border: #333;
+      --tag-text: #a0a0a0;
+
+      --card-bg: transparent;
+      --card-border: #2e2e2e;
+      --card-hover-bg: #1c1c1c;
+      --card-hover-border: #404040;
+      --card-title: #f0f0f0;
+
+      --quote-border: #d4af37;
+      --quote-text: #f0f0f0;
+
+      --subhead-bg: #1e1e1e;
+      --subhead-border: #d4af37;
+      --chip-bg: transparent;
+      --chip-border: #333;
+      --chip-hover-bg: #2a2a2a;
+      --chip-hover-text: #d4af37;
+    }
+
+    /* ================= 基础排版 ================= */
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.4s ease, color 0.4s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ================= 顶部导航 ================= */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 4vw;
+      background: var(--bg-nav);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100;
+      transition: background-color 0.4s ease;
+    }
+
+    .nav-left {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-left span {
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .nav-links a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-main);
+    }
+
+    /* 主题切换按钮 */
+    .theme-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px 12px;
+      color: var(--text-main);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .theme-btn:hover {
+      border-color: var(--text-muted);
+    }
+
+    .theme-btn svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    /* ================= 主体容器 ================= */
+    main {
+      flex: 1;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 160px 4vw 80px;
+      width: 100%;
+    }
+
+    /* ================= Hero 区域 ================= */
+    .hero {
+      margin-bottom: 5rem;
+    }
+
+    .hero-top-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    .hero-title {
+      font-size: 4.5rem;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 2rem;
+    }
+
+    .hero-title .gold {
+      color: var(--accent-gold);
+      display: block;
+    }
+
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+
+    .hero-desc strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 3.5rem;
+    }
+
+    .hero-tag {
+      font-size: 0.8rem;
+      padding: 4px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      color: var(--text-muted);
+    }
+
+    /* 引用区块 */
+    .quote-block {
+      border-left: 3px solid var(--quote-border);
+      padding-left: 1.5rem;
+      margin-left: 2px;
+    }
+
+    .quote-text {
+      font-size: 1.4rem;
+      font-weight: 700;
+      line-height: 1.5;
+      color: var(--quote-text);
+      margin-bottom: 0.8rem;
+    }
+
+    .quote-author {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ================= 三列卡片 ================= */
+    .three-cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 5rem;
+    }
+
+    .concept-card {
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      background: var(--card-bg);
+      transition: all 0.3s ease;
+    }
+
+    .concept-card:hover {
+      background: var(--card-hover-bg);
+      border-color: var(--card-hover-border);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="dark"] .concept-card:hover {
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3);
+    }
+
+    .concept-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      margin-bottom: 0.8rem;
+      letter-spacing: -0.01em;
+    }
+
+    .concept-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* ================= 分类标题 ================= */
+    .section-header {
+      margin-bottom: 2.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .section-count {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ================= 书单列表区 ================= */
+    .book-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 3rem;
+      row-gap: 2rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .book-item {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .book-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--card-title);
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .book-name::before {
+      content: "•";
+      color: var(--accent-gold);
+      font-size: 1.5rem;
+      line-height: 0;
+    }
+
+    .book-quote {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .book-quote strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    /* ================= 标签墙 ================= */
+    .chip-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      justify-content: center;
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-color);
+      transition: border-color 0.3s ease;
+    }
+
+    .chip {
+      background: var(--chip-bg);
+      color: var(--text-muted);
+      padding: 0.5rem 1.3rem;
+      border-radius: 60px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border: 1px solid var(--chip-border);
+      cursor: default;
+    }
+
+    .chip:hover {
+      background: var(--chip-hover-bg);
+      color: var(--chip-hover-text);
+      border-color: var(--accent-gold);
+      transform: scale(1.02);
+    }
+
+    /* ================= 页脚 ================= */
+    footer {
+      text-align: center;
+      padding: 3rem 0;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* ================= 响应式 ================= */
+    @media (max-width: 900px) {
+      .hero-title { font-size: 3.5rem; }
+      .nav-links { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .three-cols { grid-template-columns: 1fr; }
+      .book-list { grid-template-columns: 1fr; }
+      .hero-title { font-size: 2.8rem; }
+      main { padding-top: 120px; }
+      .hero-desc { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <nav>
+    <div class="nav-left">
+      911 <span>/ TRADING NOTES</span>
+    </div>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="#">核心语录</a>
+        <a href="#">交易启发</a>
+        <a href="#">执行框架</a>
+        <a href="#">交易检查</a>
+      </div>
+      <button class="theme-btn" id="themeToggle" aria-label="切换主题">
+        <svg id="themeIcon" viewBox="0 0 24 24">
+          <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>
+        </svg>
+        <span id="themeText">深色</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- 主体内容 -->
+  <main>
+    <!-- Hero 区域 -->
+    <header class="hero">
+      <span class="hero-top-label">TRADER'S MIND · BOOK NOTES</span>
+      <h1 class="hero-title">
+        读书是接触<br>
+        <span class="gold">上层思想的方式。</span>
+      </h1>
+      <p class="hero-desc">
+        从经典交易著作中提炼核心逻辑与实战启发。<strong>「如果这些书都看不完，建议放弃交易。」</strong> 把阅读转化为纪律，把哲学落地为规则。
+      </p>
+
+      <div class="hero-tags">
+        <span class="hero-tag">14 本核心书目</span>
+        <span class="hero-tag">核心 · 启发</span>
+        <span class="hero-tag">作者: 911</span>
+      </div>
+
+      <div class="quote-block">
+        <div class="quote-text">
+          交易不是证明自己正确，而是在发现错误时及时修正，并在正确时让利润充分增长。
+        </div>
+        <div class="quote-author">
+          — 911 对交易哲学的提炼，并非书中逐字引文
+        </div>
+      </div>
+    </header>
+
+    <!-- 三大核心概念卡片 -->
+    <div class="three-cols">
+      <div class="concept-card">
+        <div class="concept-title">顺势</div>
+        <div class="concept-desc">让价格决定方向，不预测市场</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-title">认错</div>
+        <div class="concept-desc">让亏损保持可控，铁腕止损</div>
+      </div>
+      <div class="concept-card">
+        <div class="concept-title">持盈</div>
+        <div class="concept-desc">让正确的交易奔跑，钱是坐着赚来的</div>
+      </div>
+    </div>
+
+    <!-- 分类1：交易实战与市场认知 -->
+    <div class="section-header">
+      <div class="section-title">📈 交易实战与市场认知</div>
+      <div class="section-count">8 本</div>
+    </div>
+    <div class="book-list">
+      <div class="book-item">
+        <div class="book-name">股票大作手回忆录</div>
+        <div class="book-quote">市场由人性驱动，交易最大的敌人是自己的贪婪与恐惧。<strong>顺势而为，截断亏损，让利润奔跑</strong>；从错误中学习。</div>
+      </div>
+      <div class="book-item">
+        <div class="book-name">期货大作手风云录</div>
+        <div class="book-quote">交易者必须学会“做减法”，只做看得懂的行情，等待也是一种修炼。<strong>“放鱼头，弃鱼尾，吃鱼肚”——只赚中间确定性最高的利润。</strong></div>
+      </div>
+      <div class="book-item">
+        <div class="book-name">十年一梦</div>
+        <div class="book-quote">交易是“术”与“道”的结合，光有技术不够，还要有哲学层面的认知。<strong>“人为市场立法”——用自己总结的规则去解读市场。</strong></div>
+      </div>
+      <div class="book-item">
+        <div class="book-name">期货交易策略</div>
+        <div class="book-quote">交易的核心不是预测，而是<strong>资金管理和纪律</strong>。“钱是坐着赚来的”——轻仓、顺势、耐心持仓。</div>
+      </div>
+      <div class="book-item">
+        <div class="book-name">价格形态解密</div>
+        <div class="book-quote">图表形态反映了多空博弈的心理，必须结合趋势和成交量确认。<strong>“确认比识别更重要”</strong>——假突破往往是更好的交易信号。</div>
+      </div>
+      <div class="book-item">
+        <div class="book-name">cis 股票交易术</div>
+        <div class="book-quote">顺势追涨杀跌，但必须<strong>铁腕止损</strong>。“不能战胜人性，就不能赢”——放弃补仓幻想，迅速止损。</div>
+      </div>
+      <div class="book-item">
+        <div class="book-name">金融怪杰</div>
+        <div class="book-quote">成功交易者的共性——<strong>截断亏损，让利润奔跑</strong>。“正确操作比交易结果更重要”——把交易当作遵守规则的游戏。</div>
+      </div>
+      <div class="book-item">
+        <div class="book-name">以交易为生</div>
+        <div class="book-quote">交易的成功80%来自<strong>心理和资金管理</strong>。“无法控制自己，就无法控制市场”——记录交易日志，反思情绪。</div>
+      </div>
+    </div>
+
+    <!-- 分类2：投资哲学与思维模型 -->
+    <div class="section-header">
+      <div class="section-title">🧠 投资哲学与思维模型</div>
+      <div class="section-count">4 本</div>
+    </div>
+    <div class="book-list">
+      <div class="book-item">
+        <div class="book-name">穷查理宝典</div>
+        <div class="book-quote">建立<strong>“多元思维模型”</strong>，用跨学科视角看问题，坚守能力圈。“先求不败，而后求胜”——列出失败清单，避开所有坑。</div>
+      </div>
+      <div class="book-item">
+        <div class="book-name">随机漫步的傻瓜</div>
+        <div class="book-quote">市场充满随机性，<strong>不要将运气误认为实力</strong>。“活下来比赢一局更重要”——警惕幸存者偏差，不用高杠杆赌小概率。</div>
+      </div>
+      <div class="book-item">
+        <div class="book-name">反脆弱</div>
+        <div class="book-quote">从波动和混乱中获益的能力，而非仅仅在冲击中存活。<strong>“杠铃策略”</strong>——90%极度安全资产 + 10%高风险激进资产。</div>
+      </div>
+      <div class="book-item">
+        <div class="book-name">黑天鹅</div>
+        <div class="book-quote">不可预测的极端事件主导了世界。<strong>“拥抱不确定性”</strong>——构建能在黑天鹅发生时受益的投资组合。</div>
+      </div>
+    </div>
+
+    <!-- 分类3：财富观念与长期主义 -->
+    <div class="section-header">
+      <div class="section-title">💰 财富观念与长期主义</div>
+      <div class="section-count">2 本</div>
+    </div>
+    <div class="book-list">
+      <div class="book-item">
+        <div class="book-name">滚雪球</div>
+        <div class="book-quote"><strong>复利效应和长期主义</strong>——“人生就像滚雪球，重要的是发现够湿的雪和一面够长的山坡”。“专注”——找到热爱的事业，持续投入，让时间成为朋友。</div>
+      </div>
+      <div class="book-item">
+        <div class="book-name">穷爸爸富爸爸</div>
+        <div class="book-quote"><strong>让金钱为你工作</strong>，而不是你为金钱工作。培养“财商”——分清资产与负债，通过持续投资实现财务自由。</div>
+      </div>
+    </div>
+
+    <!-- 标签墙（所有书目） -->
+    <div class="chip-cluster">
+      <span class="chip">股票大作手回忆录</span>
+      <span class="chip">期货大作手风云录</span>
+      <span class="chip">十年一梦</span>
+      <span class="chip">期货交易策略</span>
+      <span class="chip">价格形态解密</span>
+      <span class="chip">cis 股票交易术</span>
+      <span class="chip">金融怪杰</span>
+      <span class="chip">以交易为生</span>
+      <span class="chip">穷查理宝典</span>
+      <span class="chip">随机漫步的傻瓜</span>
+      <span class="chip">反脆弱</span>
+      <span class="chip">黑天鹅</span>
+      <span class="chip">滚雪球</span>
+      <span class="chip">穷爸爸富爸爸</span>
+    </div>
+
+  </main>
+
+  <footer>
+    交易必读书单 · 核心与启发 · 心智图谱
+  </footer>
+
+  <script>
+    // 获取元素
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+    const htmlElement = document.documentElement;
+
+    // 从 localStorage 读取，默认 light
+    let currentTheme = localStorage.getItem('theme-v8') || 'light';
+
+    // 图标 SVG 路径
+    const moonPath = "M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z";
+    const sunPath = "M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58a.996.996 0 0 0-1.41 0 .996.996 0 0 0 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37a.996.996 0 0 0-1.41 0 .996.996 0 0 0 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0a.996.996 0 0 0 0-1.41l-1.06-1.06zm1.06-10.96a.996.996 0 0 0 0-1.41.996.996 0 0 0-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36a.996.996 0 0 0 0-1.41.996.996 0 0 0-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z";
+
+    // 应用主题
+    function applyTheme(theme) {
+      htmlElement.setAttribute('data-theme', theme);
+
+      if (theme === 'dark') {
+        themeIcon.innerHTML = `<path d="${sunPath}"/>`;
+        themeText.textContent = '浅色';
+      } else {
+        themeIcon.innerHTML = `<path d="${moonPath}"/>`;
+        themeText.textContent = '深色';
+      }
+
+      localStorage.setItem('theme-v8', theme);
+    }
+
+    // 初始化
+    applyTheme(currentTheme);
+
+    // 切换事件
+    themeToggle.addEventListener('click', () => {
+      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      applyTheme(currentTheme);
+    });
+  </script>
+</body>
+</html>
